@@ -1,0 +1,8 @@
+# Core GUI library
+PyQt5==5.15.9
+
+# Qt Designer and UI Compiler tools
+pyqt5-tools==5.15.9.3.3
+
+# For MySQL database connectivity
+mysql-connector-python==8.3.0
