@@ -49,6 +49,7 @@ class Ui_CrickRivals(object):
         self.verticalLayout_3.addWidget(self.lineEdit)
         self.lineEdit_2 = QtWidgets.QLineEdit(self.verticalLayoutWidget_2)
         self.lineEdit_2.setObjectName("lineEdit_2")
+        self.lineEdit_2.setEchoMode(QtWidgets.QLineEdit.Password)
         self.verticalLayout_3.addWidget(self.lineEdit_2)
         self.horizontalLayoutWidget = QtWidgets.QWidget(self.centralwidget)
         self.horizontalLayoutWidget.setGeometry(QtCore.QRect(190, 370, 241, 41))
