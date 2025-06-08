@@ -11,6 +11,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QMessageBox
+from main2 import SaveDashboardWindow
 #from crickrivals_2 import Ui_MainWindow as HomeWindow
 import sqlite3
 
@@ -645,8 +646,9 @@ class Ui_MainWindow(object):
         self.label_12.setText(str(role_counts['BOWL']))
    
     def open_save_dashboard(self):
-        # Replace with your actual import + logic when ready
-        print("Opening save dashboard...")
+        self.save_dashboard_window = SaveDashboardWindow()
+        self.save_dashboard_window.show()
+
 
     def preset_teams_in_combobox(self, team1, team2):
         # Find index of team1 in comboBox items

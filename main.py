@@ -1,7 +1,9 @@
 from PyQt5 import QtWidgets
+from PyQt5.QtWidgets import QMainWindow
 import sqlite3
 from crickrivals_ui import Ui_CrickRivals  # import your auto-generated UI class
 from crickrivals_2 import Ui_MainWindow  # import your dashboard UI class
+
 
 class DashboardWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
