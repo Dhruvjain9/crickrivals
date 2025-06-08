@@ -9,6 +9,10 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import QMessageBox
+#from crickrivals_2 import Ui_MainWindow as HomeWindow
+import sqlite3
 
 
 class Ui_MainWindow(object):
@@ -339,7 +343,20 @@ class Ui_MainWindow(object):
         self.menuHelp.addAction(self.actionManual)
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuHelp.menuAction())
+        self.comboBox_2.currentIndexChanged.connect(self.update_team1)
+        self.comboBox_3.currentIndexChanged.connect(self.update_team2)
+        #self.btn_all.clicked.connect(lambda: self.filter_players())
+        self.radioButton_3.clicked.connect(lambda: self.filter_players("BAT"))
+        self.radioButton.clicked.connect(lambda: self.filter_players("BOWL"))
+        self.radioButton_2.clicked.connect(lambda: self.filter_players("AR"))
+        self.radioButton_4.clicked.connect(lambda: self.filter_players("WK"))
+        self.listWidget_2.itemDoubleClicked.connect(self.add_to_selected)
+        self.listWidget.itemDoubleClicked.connect(self.remove_from_selected)
+        self.selected_players = []
+        self.all_players = []  # This will hold all players from both teams
 
+        self.pushButton_2.clicked.connect(self.save_draft)
+        self.pushButton.clicked.connect(self.open_save_dashboard)
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -395,6 +412,172 @@ class Ui_MainWindow(object):
         self.actionManage_Team.setShortcut(_translate("MainWindow", "Ctrl+M"))
         self.actionInstructions.setText(_translate("MainWindow", "Instructions"))
         self.actionManual.setText(_translate("MainWindow", "Manual"))
+    def filter_players(self, role=None):
+        self.listWidget_2.clear()
+        for playername, player_role, points in self.all_players:
+            if role is None or player_role == role:
+                self.listWidget_2.addItem(f"{playername} | {player_role} | {points}")
+
+    def get_team_code(self, name):
+        name = name.strip()
+        if "(" in name:
+            return name[name.find("(")+1:name.find(")")]
+        team_map = {
+            "Punjab Kings (PBKS)": "PBKS",
+            "Royal Challengers Bangalore (RCB)": "RCB",
+            "Mumbai Indians (MI)": "MI",
+            "Chennai Super Kings (CSK)": "CSK",
+            "Delhi Capitals (DC)": "DC",
+            "Kolkata Knight Riders (KKR)": "KKR",
+            "Lucknow Super Giants (LSG)": "LSG",
+            "Sunrisers Hyderabad (SRH)": "SRH",
+            "Rajasthan Royals (RR)": "RR",
+            "Gujarat Titans (GT)": "GT"
+        }
+        return team_map.get(name, name)
+    def update_team1(self):
+        team1_full = self.comboBox_2.currentText()
+        team1_code = self.get_team_code(team1_full)
+
+        # Set Team 1 logo
+        pixmap1 = QPixmap(f"images/{team1_code}.jpg")
+        self.label_2.setPixmap(pixmap1)
+
+        # Fetch players for team1
+        conn = sqlite3.connect("app_database.db")
+        cursor = conn.cursor()
+        cursor.execute("SELECT playername, role, points FROM players WHERE team = ?", (team1_code,))
+        self.players_team1 = cursor.fetchall()
+        conn.close()
+
+        self.update_combined_list()
+
+
+    def update_team2(self):
+        team2_full = self.comboBox_3.currentText()
+        team2_code = self.get_team_code(team2_full)
+
+        # Set Team 2 logo
+        pixmap2 = QPixmap(f"images/{team2_code}.jpg")
+        self.label_3.setPixmap(pixmap2)
+
+        # Fetch players for team2
+        conn = sqlite3.connect("app_database.db")
+        cursor = conn.cursor()
+        cursor.execute("SELECT playername, role, points FROM players WHERE team = ?", (team2_code,))
+        self.players_team2 = cursor.fetchall()
+        conn.close()
+
+        self.update_combined_list()
+
+
+    def update_combined_list(self):
+        # Merge both player lists (if defined)
+        combined = []
+        if hasattr(self, 'players_team1'):
+            combined.extend(self.players_team1)
+        if hasattr(self, 'players_team2'):
+            combined.extend(self.players_team2)
+        self.all_players = combined  # combined = all players from both teams
+        # Clear and add to listWidget_2
+        self.listWidget_2.clear()
+        for playername, role, points in combined:
+            self.listWidget_2.addItem(f"{playername} | {role} | {points}")
+
+    def update_left_list(self):
+        self.listWidget_2.clear()
+
+        role = None
+        if self.radioButton_3.isChecked():
+            role = "BAT"
+        elif self.radioButton.isChecked():
+            role = "BOWL"
+        elif self.radioButton_2.isChecked():
+            role = "AR"
+        elif self.radioButton_4.isChecked():
+            role = "WK"
+
+        for playername, r, pts in self.all_players:
+            if role is None or r == role:
+                self.listWidget_2.addItem(f"{playername} | {r} | {pts}")
+    def add_to_selected(self, item):
+        if len(self.selected_players) >= 11:
+            QMessageBox.warning(None, "Limit Reached", "Only 11 players allowed.")
+            return
+
+        data = item.text().split(" | ")
+        if any(p["playername"] == data[0] for p in self.selected_players):
+            return
+        team_name = self.comboBox_2.currentText()
+        self.selected_players.append({
+            "playername": data[0],
+            "role": data[1],
+            "points": int(data[2]),
+            "team": self.get_team_code(team_name)
+            })
+
+        self.listWidget.addItem(item.text())
+        self.listWidget_2.takeItem(self.listWidget_2.row(item))
+        self.update_labels()
+
+    def remove_from_selected(self, item):
+        name = item.text().split(" | ")[0]
+        self.selected_players = [p for p in self.selected_players if p["playername"] != name]
+
+        self.listWidget_2.addItem(item.text())
+        self.listWidget.takeItem(self.listWidget.row(item))
+        self.update_labels()
+
+    def update_labels(self):
+        count = len(self.selected_players)
+        points = sum(p["points"] for p in self.selected_players)
+
+        # Update count label if needed
+        # self.label_player_count.setText(f"Players: {count}/11")
+
+        self.label_5.setText(str(points))
+
+    def save_draft(self):
+        if not self.selected_players:
+            QMessageBox.warning(None, "Empty", "No players selected.")
+            return
+
+        user_team_name = self.lineEdit.text().strip()
+        if not user_team_name:
+            QMessageBox.warning(None, "Missing Team Name", "Please enter your team name.")
+            return
+
+        team1 = self.comboBox_2.currentText()
+        team2 = self.comboBox_3.currentText()
+        match_name = f"{team1} vs {team2}"
+
+        conn = sqlite3.connect("app_database.db")
+        cursor = conn.cursor()
+
+        for player in self.selected_players:
+            cursor.execute('''
+                INSERT INTO drafts (team_name, match_name, playername, team, role, points)
+                VALUES (?, ?, ?, ?, ?, ?)
+            ''', (
+                user_team_name,
+                match_name,
+                player["playername"],
+                self.get_team_code(player["team"]) if "team" in player else "UNKNOWN",
+                player["role"],
+                player["points"]
+            ))
+
+        conn.commit()
+        conn.close()
+
+        QMessageBox.information(None, "Saved", "Draft saved successfully!")
+        self.close()
+        #self.homepage = HomeWindow()
+        #self.homepage.show()
+    def open_save_dashboard(self):
+        # Replace with your actual import + logic when ready
+        print("Opening save dashboard...")
+
     def preset_teams_in_combobox(self, team1, team2):
         # Find index of team1 in comboBox items
         index1 = self.comboBox_2.findText(team1)
