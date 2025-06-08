@@ -9,12 +9,16 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import QMessageBox
+#from crickrivals_2 import Ui_MainWindow as HomeWindow
+import sqlite3
 
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(705, 524)
+        MainWindow.resize(706, 540)
         palette = QtGui.QPalette()
         brush = QtGui.QBrush(QtGui.QColor(255, 255, 255))
         brush.setStyle(QtCore.Qt.SolidPattern)
@@ -42,9 +46,10 @@ class Ui_MainWindow(object):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayoutWidget_2 = QtWidgets.QWidget(self.centralwidget)
-        self.gridLayoutWidget_2.setGeometry(QtCore.QRect(10, 10, 681, 461))
+        self.gridLayoutWidget_2.setGeometry(QtCore.QRect(10, 10, 691, 461))
         self.gridLayoutWidget_2.setObjectName("gridLayoutWidget_2")
         self.gridLayout_2 = QtWidgets.QGridLayout(self.gridLayoutWidget_2)
+        self.gridLayout_2.setSizeConstraint(QtWidgets.QLayout.SetNoConstraint)
         self.gridLayout_2.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_2.setObjectName("gridLayout_2")
         self.verticalLayout = QtWidgets.QVBoxLayout()
@@ -57,6 +62,11 @@ class Ui_MainWindow(object):
         spacerItem = QtWidgets.QSpacerItem(53, 20, QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem)
         self.comboBox_2 = QtWidgets.QComboBox(self.gridLayoutWidget_2)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.comboBox_2.sizePolicy().hasHeightForWidth())
+        self.comboBox_2.setSizePolicy(sizePolicy)
         self.comboBox_2.setObjectName("comboBox_2")
         self.comboBox_2.addItem("<SELECT TEAM>")
         self.comboBox_2.addItem("Chennai Super Kings (CSK)")
@@ -88,6 +98,11 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2.addWidget(self.comboBox_3)
         spacerItem2 = QtWidgets.QSpacerItem(51, 20, QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem2)
+        self.horizontalLayout_2.setStretch(0, 1)
+        self.horizontalLayout_2.setStretch(1, 1)
+        self.horizontalLayout_2.setStretch(2, 1)
+        self.horizontalLayout_2.setStretch(3, 1)
+        self.horizontalLayout_2.setStretch(4, 1)
         self.gridLayout.addLayout(self.horizontalLayout_2, 1, 0, 1, 1)
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
@@ -101,24 +116,31 @@ class Ui_MainWindow(object):
         self.horizontalLayout.addWidget(self.lineEdit)
         spacerItem4 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem4)
+        self.horizontalLayout.setStretch(1, 1)
+        self.horizontalLayout.setStretch(2, 1)
+        self.horizontalLayout.setStretch(3, 1)
         self.gridLayout.addLayout(self.horizontalLayout, 0, 0, 1, 1)
         self.horizontalLayout_3 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
         self.label_2 = QtWidgets.QLabel(self.gridLayoutWidget_2)
         self.label_2.setText("")
-        self.label_2.setPixmap(QtGui.QPixmap("../../../../../../OneDrive/Desktop/images/pbks.jpg"))
+        self.label_2.setPixmap(QtGui.QPixmap("images/pbks.jpg"))
         self.label_2.setScaledContents(False)
         self.label_2.setAlignment(QtCore.Qt.AlignCenter)
         self.label_2.setObjectName("label_2")
         self.horizontalLayout_3.addWidget(self.label_2)
         self.label_3 = QtWidgets.QLabel(self.gridLayoutWidget_2)
         self.label_3.setText("")
-        self.label_3.setPixmap(QtGui.QPixmap("../../../../../../OneDrive/Desktop/images/rcb.jpg"))
+        self.label_3.setPixmap(QtGui.QPixmap("images/rcb.jpg"))
         self.label_3.setScaledContents(False)
         self.label_3.setAlignment(QtCore.Qt.AlignCenter)
         self.label_3.setObjectName("label_3")
         self.horizontalLayout_3.addWidget(self.label_3)
+        self.horizontalLayout_3.setStretch(0, 1)
+        self.horizontalLayout_3.setStretch(1, 1)
         self.gridLayout.addLayout(self.horizontalLayout_3, 2, 0, 1, 1)
+        self.gridLayout.setRowStretch(0, 1)
+        self.gridLayout.setRowStretch(2, 1)
         self.verticalLayout.addLayout(self.gridLayout)
         self.horizontalLayout_7 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_7.setObjectName("horizontalLayout_7")
@@ -247,14 +269,19 @@ class Ui_MainWindow(object):
         self.horizontalLayout_6.addWidget(self.label_5)
         spacerItem8 = QtWidgets.QSpacerItem(300, 20, QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_6.addItem(spacerItem8)
+        self.pushButton_2 = QtWidgets.QPushButton(self.gridLayoutWidget_2)
+        self.pushButton_2.setObjectName("pushButton_2")
+        self.horizontalLayout_6.addWidget(self.pushButton_2)
         self.pushButton = QtWidgets.QPushButton(self.gridLayoutWidget_2)
         self.pushButton.setObjectName("pushButton")
         self.horizontalLayout_6.addWidget(self.pushButton)
         self.verticalLayout.addLayout(self.horizontalLayout_6)
+        self.verticalLayout.setStretch(0, 1)
+        self.verticalLayout.setStretch(3, 1)
         self.gridLayout_2.addLayout(self.verticalLayout, 0, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 705, 22))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 706, 22))
         palette = QtGui.QPalette()
         brush = QtGui.QBrush(QtGui.QColor(255, 255, 255))
         brush.setStyle(QtCore.Qt.SolidPattern)
@@ -285,14 +312,29 @@ class Ui_MainWindow(object):
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
         self.actionNew_Team = QtWidgets.QAction(MainWindow)
+        icon1 = QtGui.QIcon()
+        icon1.addPixmap(QtGui.QPixmap("images/new-team.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionNew_Team.setIcon(icon1)
         self.actionNew_Team.setObjectName("actionNew_Team")
         self.actionSave_Team = QtWidgets.QAction(MainWindow)
+        icon2 = QtGui.QIcon()
+        icon2.addPixmap(QtGui.QPixmap("images/save--v1.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionSave_Team.setIcon(icon2)
         self.actionSave_Team.setObjectName("actionSave_Team")
         self.actionManage_Team = QtWidgets.QAction(MainWindow)
+        icon3 = QtGui.QIcon()
+        icon3.addPixmap(QtGui.QPixmap("images/manage-team.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionManage_Team.setIcon(icon3)
         self.actionManage_Team.setObjectName("actionManage_Team")
         self.actionInstructions = QtWidgets.QAction(MainWindow)
+        icon4 = QtGui.QIcon()
+        icon4.addPixmap(QtGui.QPixmap("images/instructions.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionInstructions.setIcon(icon4)
         self.actionInstructions.setObjectName("actionInstructions")
         self.actionManual = QtWidgets.QAction(MainWindow)
+        icon5 = QtGui.QIcon()
+        icon5.addPixmap(QtGui.QPixmap("images/manual.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionManual.setIcon(icon5)
         self.actionManual.setObjectName("actionManual")
         self.menuFile.addAction(self.actionNew_Team)
         self.menuFile.addAction(self.actionSave_Team)
@@ -301,6 +343,21 @@ class Ui_MainWindow(object):
         self.menuHelp.addAction(self.actionManual)
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuHelp.menuAction())
+        self.comboBox_2.currentIndexChanged.connect(self.update_team1)
+        self.comboBox_3.currentIndexChanged.connect(self.update_team2)
+        #self.btn_all.clicked.connect(lambda: self.filter_players())
+        self.radioButton_3.clicked.connect(lambda: self.filter_players("BAT"))
+        self.radioButton.clicked.connect(lambda: self.filter_players("BOWL"))
+        self.radioButton_2.clicked.connect(lambda: self.filter_players("AR"))
+        self.radioButton_4.clicked.connect(lambda: self.filter_players("WK"))
+        self.listWidget_2.itemDoubleClicked.connect(self.add_to_selected)
+        self.listWidget.itemDoubleClicked.connect(self.remove_from_selected)
+        self.selected_players = []
+        self.all_players = []  # This will hold all players from both teams
+        self.actionSave_Team.triggered.connect(self.pushButton.click)
+        self.pushButton_2.clicked.connect(self.save_draft)
+        self.pushButton.clicked.connect(self.open_save_dashboard)
+        self.update_role_counters()
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -345,6 +402,7 @@ class Ui_MainWindow(object):
         self.radioButton.setText(_translate("MainWindow", "BOWL"))
         self.label_4.setText(_translate("MainWindow", "Total credits: "))
         self.label_5.setText(_translate("MainWindow", "##"))
+        self.pushButton_2.setText(_translate("MainWindow", "Save Draft"))
         self.pushButton.setText(_translate("MainWindow", "Save Team"))
         self.menuFile.setTitle(_translate("MainWindow", "File"))
         self.menuHelp.setTitle(_translate("MainWindow", "Help"))
@@ -356,6 +414,240 @@ class Ui_MainWindow(object):
         self.actionManage_Team.setShortcut(_translate("MainWindow", "Ctrl+M"))
         self.actionInstructions.setText(_translate("MainWindow", "Instructions"))
         self.actionManual.setText(_translate("MainWindow", "Manual"))
+    def filter_players(self, role=None):
+        self.listWidget_2.clear()
+        for playername, player_role, points in self.all_players:
+            if role is None or player_role == role:
+                self.listWidget_2.addItem(f"{playername} | {player_role} | {points}")
+
+    def get_team_code(self, name):
+        name = name.strip()
+        if "(" in name:
+            return name[name.find("(")+1:name.find(")")]
+        team_map = {
+            "Punjab Kings (PBKS)": "PBKS",
+            "Royal Challengers Bangalore (RCB)": "RCB",
+            "Mumbai Indians (MI)": "MI",
+            "Chennai Super Kings (CSK)": "CSK",
+            "Delhi Capitals (DC)": "DC",
+            "Kolkata Knight Riders (KKR)": "KKR",
+            "Lucknow Super Giants (LSG)": "LSG",
+            "Sunrisers Hyderabad (SRH)": "SRH",
+            "Rajasthan Royals (RR)": "RR",
+            "Gujarat Titans (GT)": "GT"
+        }
+        return team_map.get(name, name)
+    def update_team1(self):
+        team1_full = self.comboBox_2.currentText()
+        team1_code = self.get_team_code(team1_full)
+
+        # Set Team 1 logo
+        pixmap1 = QPixmap(f"images/{team1_code}.jpg")
+        self.label_2.setPixmap(pixmap1)
+
+        # Fetch players for team1
+        conn = sqlite3.connect("app_database.db")
+        cursor = conn.cursor()
+        cursor.execute("SELECT playername, role, points FROM players WHERE team = ?", (team1_code,))
+        self.players_team1 = cursor.fetchall()
+        conn.close()
+
+        self.update_combined_list()
+
+
+    def update_team2(self):
+        team1_full = self.comboBox_2.currentText()
+        team2_full = self.comboBox_3.currentText()
+        team2_code = self.get_team_code(team2_full)
+        if team1_full == team2_full and team1_full != "":
+            QMessageBox.warning(None, "Team Selection Error", "Both teams cannot be the same!")
+            # Reset the second combo box or clear it
+            self.comboBox_3.setCurrentIndex(-1)
+            return
+        # Reset the second combo box if the same team is selected
+
+        # Set Team 2 logo
+        pixmap2 = QPixmap(f"images/{team2_code}.jpg")
+        self.label_3.setPixmap(pixmap2)
+
+        # Fetch players for team2
+        conn = sqlite3.connect("app_database.db")
+        cursor = conn.cursor()
+        cursor.execute("SELECT playername, role, points FROM players WHERE team = ?", (team2_code,))
+        self.players_team2 = cursor.fetchall()
+        conn.close()
+
+        self.update_combined_list()
+
+
+    def update_combined_list(self):
+        # Merge both player lists (if defined)
+        combined = []
+        if hasattr(self, 'players_team1'):
+            combined.extend(self.players_team1)
+        if hasattr(self, 'players_team2'):
+            combined.extend(self.players_team2)
+        self.all_players = combined  # combined = all players from both teams
+        # Clear and add to listWidget_2
+        self.listWidget_2.clear()
+        for playername, role, points in combined:
+            self.listWidget_2.addItem(f"{playername} | {role} | {points}")
+
+    def update_left_list(self):
+        self.listWidget_2.clear()
+
+        role = None
+        if self.radioButton_3.isChecked():
+            role = "BAT"
+        elif self.radioButton.isChecked():
+            role = "BOWL"
+        elif self.radioButton_2.isChecked():
+            role = "AR"
+        elif self.radioButton_4.isChecked():
+            role = "WK"
+
+        for playername, r, pts in self.all_players:
+            if role is None or r == role:
+                self.listWidget_2.addItem(f"{playername} | {r} | {pts}")
+    def add_to_selected(self, item):
+        if len(self.selected_players) >= 11:
+            QMessageBox.warning(None, "Limit Reached", "Only 11 players allowed.")
+            return
+
+        data = item.text().split(" | ")
+        playername, role, points = data[0], data[1], int(data[2])
+
+        # Duplicate check
+        if any(p["playername"] == playername for p in self.selected_players):
+            return
+
+        # Role limits
+        role_max = {
+            "WK": 4,
+            "BAT": 5,
+            "AR": 3,
+            "BOWL": 5
+        }
+
+        # Count existing roles
+        self.role_counts = {"WK": 0, "BAT": 0, "AR": 0, "BOWL": 0}
+        total_points = 0
+        for p in self.selected_players:
+            if p["role"] in self.role_counts:
+                self.role_counts[p["role"]] += 1
+            total_points += p["points"]
+
+        if self.role_counts[role] >= role_max[role]:
+            QMessageBox.warning(None, "Role Limit Reached", f"You can't have more than {role_max[role]} {role}s.")
+            return
+        if total_points + points > 100:
+            QMessageBox.warning(None, "Points Limit Exceeded", "Adding this player will exceed 100 total points.")
+            return
+
+        # All validations passed – add player
+        team_name = self.comboBox_2.currentText()
+        self.selected_players.append({
+            "playername": playername,
+            "role": role,
+            "points": points,
+            "team": self.get_team_code(team_name)
+        })
+
+        self.listWidget.addItem(item.text())
+        self.listWidget_2.takeItem(self.listWidget_2.row(item))
+        self.update_role_counters()
+        self.update_labels()
+
+
+    def remove_from_selected(self, item):
+        name = item.text().split(" | ")[0]
+        self.selected_players = [p for p in self.selected_players if p["playername"] != name]
+
+        self.listWidget_2.addItem(item.text())
+        self.listWidget.takeItem(self.listWidget.row(item))
+        self.update_role_counters()
+        self.update_labels()
+
+    def update_labels(self):
+        count = len(self.selected_players)
+        points = sum(p["points"] for p in self.selected_players)
+
+        # Update count label if needed
+        # self.label_player_count.setText(f"Players: {count}/11")
+
+        self.label_5.setText(str(points))
+
+    def save_draft(self):
+        if not self.selected_players:
+            QMessageBox.warning(None, "Empty", "No players selected.")
+            return
+        if len(self.selected_players) < 11:
+            QMessageBox.warning(None, "Incomplete Team", "Please select 11 players before saving.")
+            return
+
+        # Check that no role count is 0
+        role_counts = {"WK": 0, "BAT": 0, "AR": 0, "BOWL": 0}
+        for p in self.selected_players:
+            if p["role"] in role_counts:
+                role_counts[p["role"]] += 1
+        missing_roles = [role for role, count in role_counts.items() if count == 0]
+        if missing_roles:
+            QMessageBox.warning(None, "Role Missing", f"Your team must have at least one player for each role. Missing: {', '.join(missing_roles)}")
+            return
+
+        user_team_name = self.lineEdit.text().strip()
+        if not user_team_name:
+            QMessageBox.warning(None, "Missing Team Name", "Please enter your team name.")
+            return
+
+        team1 = self.comboBox_2.currentText()
+        team2 = self.comboBox_3.currentText()
+        match_name = f"{team1} vs {team2}"
+
+        conn = sqlite3.connect("app_database.db")
+        cursor = conn.cursor()
+
+        for player in self.selected_players:
+            cursor.execute('''
+                INSERT INTO drafts (team_name, match_name, playername, team, role, points)
+                VALUES (?, ?, ?, ?, ?, ?)
+            ''', (
+                user_team_name,
+                match_name,
+                player["playername"],
+                self.get_team_code(player["team"]) if "team" in player else "UNKNOWN",
+                player["role"],
+                player["points"]
+            ))
+
+        conn.commit()
+        conn.close()
+
+        QMessageBox.information(None, "Saved", "Draft saved successfully!")
+        self.close()
+        #self.homepage = HomeWindow()
+        #self.homepage.show()
+    
+    def update_role_counters(self):
+        # Initialize counts
+        role_counts = {"WK": 0, "BAT": 0, "AR": 0, "BOWL": 0}
+
+        # Count roles in selected players
+        for player in self.selected_players:
+            role = player.get("role", "")
+            if role in role_counts:
+                role_counts[role] += 1
+
+        # Update your labels — replace label names accordingly
+        self.label_14.setText(str(role_counts['WK']))
+        self.label_6.setText(str(role_counts['BAT']))
+        self.label_8.setText(str(role_counts['AR']))
+        self.label_12.setText(str(role_counts['BOWL']))
+   
+    def open_save_dashboard(self):
+        # Replace with your actual import + logic when ready
+        print("Opening save dashboard...")
+
     def preset_teams_in_combobox(self, team1, team2):
         # Find index of team1 in comboBox items
         index1 = self.comboBox_2.findText(team1)
