@@ -11,7 +11,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QMessageBox
-from saveDashboard import Ui_saveDashboard as SaveWindow
 from main2 import SaveDashboardWindow
 #from crickrivals_2 import Ui_MainWindow as HomeWindow
 import sqlite3
