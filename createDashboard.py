@@ -18,7 +18,7 @@ import sqlite3
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(706, 520)
+        MainWindow.resize(706, 540)
         palette = QtGui.QPalette()
         brush = QtGui.QBrush(QtGui.QColor(255, 255, 255))
         brush.setStyle(QtCore.Qt.SolidPattern)
@@ -354,9 +354,11 @@ class Ui_MainWindow(object):
         self.listWidget.itemDoubleClicked.connect(self.remove_from_selected)
         self.selected_players = []
         self.all_players = []  # This will hold all players from both teams
-
+        self.actionSave_Team.triggered.connect(self.pushButton.click)
         self.pushButton_2.clicked.connect(self.save_draft)
         self.pushButton.clicked.connect(self.open_save_dashboard)
+        self.update_role_counters()
+
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -454,8 +456,15 @@ class Ui_MainWindow(object):
 
 
     def update_team2(self):
+        team1_full = self.comboBox_2.currentText()
         team2_full = self.comboBox_3.currentText()
         team2_code = self.get_team_code(team2_full)
+        if team1_full == team2_full and team1_full != "":
+            QMessageBox.warning(None, "Team Selection Error", "Both teams cannot be the same!")
+            # Reset the second combo box or clear it
+            self.comboBox_3.setCurrentIndex(-1)
+            return
+        # Reset the second combo box if the same team is selected
 
         # Set Team 2 logo
         pixmap2 = QPixmap(f"images/{team2_code}.jpg")
@@ -506,19 +515,49 @@ class Ui_MainWindow(object):
             return
 
         data = item.text().split(" | ")
-        if any(p["playername"] == data[0] for p in self.selected_players):
+        playername, role, points = data[0], data[1], int(data[2])
+
+        # Duplicate check
+        if any(p["playername"] == playername for p in self.selected_players):
             return
+
+        # Role limits
+        role_max = {
+            "WK": 4,
+            "BAT": 5,
+            "AR": 3,
+            "BOWL": 5
+        }
+
+        # Count existing roles
+        self.role_counts = {"WK": 0, "BAT": 0, "AR": 0, "BOWL": 0}
+        total_points = 0
+        for p in self.selected_players:
+            if p["role"] in self.role_counts:
+                self.role_counts[p["role"]] += 1
+            total_points += p["points"]
+
+        if self.role_counts[role] >= role_max[role]:
+            QMessageBox.warning(None, "Role Limit Reached", f"You can't have more than {role_max[role]} {role}s.")
+            return
+        if total_points + points > 100:
+            QMessageBox.warning(None, "Points Limit Exceeded", "Adding this player will exceed 100 total points.")
+            return
+
+        # All validations passed – add player
         team_name = self.comboBox_2.currentText()
         self.selected_players.append({
-            "playername": data[0],
-            "role": data[1],
-            "points": int(data[2]),
+            "playername": playername,
+            "role": role,
+            "points": points,
             "team": self.get_team_code(team_name)
-            })
+        })
 
         self.listWidget.addItem(item.text())
         self.listWidget_2.takeItem(self.listWidget_2.row(item))
+        self.update_role_counters()
         self.update_labels()
+
 
     def remove_from_selected(self, item):
         name = item.text().split(" | ")[0]
@@ -526,6 +565,7 @@ class Ui_MainWindow(object):
 
         self.listWidget_2.addItem(item.text())
         self.listWidget.takeItem(self.listWidget.row(item))
+        self.update_role_counters()
         self.update_labels()
 
     def update_labels(self):
@@ -540,6 +580,19 @@ class Ui_MainWindow(object):
     def save_draft(self):
         if not self.selected_players:
             QMessageBox.warning(None, "Empty", "No players selected.")
+            return
+        if len(self.selected_players) < 11:
+            QMessageBox.warning(None, "Incomplete Team", "Please select 11 players before saving.")
+            return
+
+        # Check that no role count is 0
+        role_counts = {"WK": 0, "BAT": 0, "AR": 0, "BOWL": 0}
+        for p in self.selected_players:
+            if p["role"] in role_counts:
+                role_counts[p["role"]] += 1
+        missing_roles = [role for role, count in role_counts.items() if count == 0]
+        if missing_roles:
+            QMessageBox.warning(None, "Role Missing", f"Your team must have at least one player for each role. Missing: {', '.join(missing_roles)}")
             return
 
         user_team_name = self.lineEdit.text().strip()
@@ -574,6 +627,23 @@ class Ui_MainWindow(object):
         self.close()
         #self.homepage = HomeWindow()
         #self.homepage.show()
+    
+    def update_role_counters(self):
+        # Initialize counts
+        role_counts = {"WK": 0, "BAT": 0, "AR": 0, "BOWL": 0}
+
+        # Count roles in selected players
+        for player in self.selected_players:
+            role = player.get("role", "")
+            if role in role_counts:
+                role_counts[role] += 1
+
+        # Update your labels — replace label names accordingly
+        self.label_14.setText(str(role_counts['WK']))
+        self.label_6.setText(str(role_counts['BAT']))
+        self.label_8.setText(str(role_counts['AR']))
+        self.label_12.setText(str(role_counts['BOWL']))
+   
     def open_save_dashboard(self):
         # Replace with your actual import + logic when ready
         print("Opening save dashboard...")
