@@ -20,7 +20,7 @@ import sqlite3
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1720, 880)
+        MainWindow.resize(1745, 940)
         palette = QtGui.QPalette()
         brush = QtGui.QBrush(QtGui.QColor(255, 255, 255))
         brush.setStyle(QtCore.Qt.SolidPattern)
@@ -48,7 +48,7 @@ class Ui_MainWindow(object):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayoutWidget_2 = QtWidgets.QWidget(self.centralwidget)
-        self.gridLayoutWidget_2.setGeometry(QtCore.QRect(10, 0, 1691, 821))
+        self.gridLayoutWidget_2.setGeometry(QtCore.QRect(20, 20, 1705, 851))
         self.gridLayoutWidget_2.setObjectName("gridLayoutWidget_2")
         self.gridLayout_2 = QtWidgets.QGridLayout(self.gridLayoutWidget_2)
         self.gridLayout_2.setSizeConstraint(QtWidgets.QLayout.SetNoConstraint)
