@@ -11,6 +11,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QMessageBox
+from saveDashboard import Ui_saveDashboard
 from main2 import SaveDashboardWindow
 #from crickrivals_2 import Ui_MainWindow as HomeWindow
 import sqlite3
@@ -19,7 +20,7 @@ import sqlite3
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(706, 540)
+        MainWindow.resize(1720, 880)
         palette = QtGui.QPalette()
         brush = QtGui.QBrush(QtGui.QColor(255, 255, 255))
         brush.setStyle(QtCore.Qt.SolidPattern)
@@ -47,7 +48,7 @@ class Ui_MainWindow(object):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayoutWidget_2 = QtWidgets.QWidget(self.centralwidget)
-        self.gridLayoutWidget_2.setGeometry(QtCore.QRect(10, 10, 691, 461))
+        self.gridLayoutWidget_2.setGeometry(QtCore.QRect(10, 10, 1705, 801))
         self.gridLayoutWidget_2.setObjectName("gridLayoutWidget_2")
         self.gridLayout_2 = QtWidgets.QGridLayout(self.gridLayoutWidget_2)
         self.gridLayout_2.setSizeConstraint(QtWidgets.QLayout.SetNoConstraint)
@@ -646,8 +647,23 @@ class Ui_MainWindow(object):
         self.label_12.setText(str(role_counts['BOWL']))
    
     def open_save_dashboard(self):
-        self.save_dashboard_window = SaveDashboardWindow()
-        self.save_dashboard_window.show()
+        self.save_window = QtWidgets.QMainWindow()
+
+        # Collect data to pass
+        team_name = self.lineEdit.text().strip()  # your fantasy team name
+        team1 = self.comboBox_2.currentText()
+        team2 = self.comboBox_3.currentText()
+        team1_code = self.get_team_code(team1)
+        team2_code = self.get_team_code(team2)
+
+        # Format: "Player Name | Role | Team"
+        players_list = [
+            f"{p['playername']} | {p['role']} | {p['team']}" for p in self.selected_players
+        ]
+
+        self.ui_save = Ui_saveDashboard(team_name, team1, team2, players_list, team1_code, team2_code)
+        self.ui_save.setupUi(self.save_window)
+        self.save_window.show()
 
 
     def preset_teams_in_combobox(self, team1, team2):
