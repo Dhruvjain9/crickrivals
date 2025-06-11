@@ -1,4 +1,4 @@
-# 🏏CrickRivals Fantasy Cricket Appz🏏
+# 🏏CrickRivals Fantasy Cricket🏏
 
 ## Overview
 CrickRivals is a simple and basic fantasy cricket application that allows users to sign up, log in, and create their own fantasy cricket team. The app focuses on a straightforward user experience, enabling users to select players from real cricket teams to build their playing XI.
