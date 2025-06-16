@@ -325,7 +325,7 @@ class Ui_saveDashboard(object):
             "captain": self.captain,
             "vice_captain": self.vice_captain
         }
-
+    
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
