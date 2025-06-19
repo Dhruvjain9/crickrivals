@@ -2,8 +2,6 @@ from PyQt5 import QtWidgets, QtGui
 from PyQt5.QtWidgets import QMainWindow, QMessageBox
 import sqlite3
 import hashlib
-from PyQt5.QtWidgets import QLabel
-from PyQt5.QtCore import QTimer
 from crickrivals_ui import Ui_CrickRivals  # Login UI
 from crickrivals_2 import Ui_MainWindow    # Dashboard UI
 
@@ -19,71 +17,112 @@ class DashboardWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         super().__init__()
         self.setupUi(self)
         self.setStyleSheet("""
-/* Main Window */
+/* 🌟 Main Window */
 QMainWindow {
-    background-color: #e6f0ff;
+    background-color: #f8fbff;
+    font-family: "Segoe UI", sans-serif;
+    font-size: 14px;
 }
 
-/* Menu Bar */
+/* 🔝 Menu Bar */
 QMenuBar {
-    background-color: #f2f9ff;
-    color: #003366;
-    font: bold 14px "Segoe UI";
+    background-color: #ffffff;
+    color: #1a1a1a;
+    padding: 6px;
+    font-weight: bold;
+    border-bottom: 1px solid #d0e3ff;
 }
 
 QMenuBar::item:selected {
-    background-color: #b3d9ff;
-}
-
-/* Black Marquee Banner */
-QLabel#label_banner {
-    background-color: black;
-    color: white;
-    font: bold 18px "Arial";
-    padding: 10px;
-    border-radius: 10px;
-    qproperty-alignment: AlignCenter;
-}
-
-/* Team Section Backgrounds */
-QFrame {
-    background-color: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #d6eaff, stop:1 #f2fbff);
-    border: 1px solid #cce0ff;
-    border-radius: 10px;
-    padding: 10px;
-}
-
-/* VS Label */
-QLabel#vsLabel {
-    font: bold 18px "Calibri";
+    background-color: #cce6ff;
     color: #004080;
+}
+
+/* 🏁 Marquee / Banner */
+QLabel#label_banner {
+    background-color: #004080;
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: bold;
+    padding: 12px;
+    border-radius: 12px;
     qproperty-alignment: AlignCenter;
 }
 
-/* Team Logos */
-QLabel[objectName^="teamLogo"] {
-    border: 2px solid #99ccff;
-    border-radius: 10px;
-    padding: 5px;
-    background-color: white;
+/* 🧊 Card-style Frames */
+QFrame {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+        stop:0 #ebf5ff, stop:1 #ffffff);
+    border: 1px solid #cfdff7;
+    border-radius: 12px;
+    padding: 10px;
+    box-shadow: 2px 2px 6px rgba(0,0,0,0.05);
 }
 
-/* Match Button */
+/* ⚔️ VS Label */
+QLabel#vsLabel {
+    font: bold 20px "Segoe UI";
+    color: #003366;
+    qproperty-alignment: AlignCenter;
+}
+
+/* 🏏 Team Logos */
+QLabel[objectName^="teamLogo"] {
+    background-color: #ffffff;
+    border: 2px solid #aad4ff;
+    border-radius: 12px;
+    padding: 6px;
+    margin: 4px;
+}
+
+/* 🎯 Push Buttons */
 QPushButton {
-    background-color: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #00c6ff, stop:1 #0072ff);
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:1, y2:0,
+        stop:0 #42a5f5, stop:1 #1e88e5
+    );
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 14px;
     border: none;
-    border-radius: 8px;
-    color: white;
-    font: bold 14px "Segoe UI";
-    padding: 8px 16px;
+    border-radius: 10px;
+    padding: 10px 18px;
 }
 
 QPushButton:hover {
-    background-color: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #4dd2ff, stop:1 #3399ff);
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:1, y2:0,
+        stop:0 #64b5f6, stop:1 #2196f3
+    );
 }
 
 QPushButton:pressed {
-    background-color: #005c99;
+    background-color: #1565c0;
+}
+
+/* ✅ Combo Boxes */
+QComboBox {
+    background-color: #ffffff;
+    border: 1px solid #b3d9ff;
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-weight: bold;
+    color: #003366;
+}
+
+QComboBox:hover {
+    background-color: #e0f2ff; /* Light blue on hover */
+    border: 1px solid #66bfff;
+}
+/* 📝 Labels (Default) */
+QLabel {
+    color: #333333;
+    font-size: 14px;
+}
+QLabel#label_title {
+    font: bold 24px "Segoe UI";
+    color: #003366;
+    qproperty-alignment: AlignCenter;
 }
 """)
 
@@ -145,6 +184,8 @@ QPushButton:pressed {
         self.setWindowIcon(QtGui.QIcon("images/logo.png"))  # Optional
 
         self.db_path = "app_database.db"
+        self.lineEdit_2.returnPressed.connect(self.handle_login)
+        self.lineEdit.returnPressed.connect(self.handle_login)
         self.pushButton_6.clicked.connect(self.handle_login)
         self.pushButton_5.clicked.connect(self.handle_signup)
 
