@@ -13,9 +13,10 @@ def hash_password(password):
 
 
 class DashboardWindow(QtWidgets.QMainWindow, Ui_MainWindow):
-    def __init__(self):
+    def __init__(self, username):
         super().__init__()
         self.setupUi(self)
+        self.username = username
         self.setStyleSheet("""
 /* 🌟 Main Window */
 QMainWindow {
@@ -190,17 +191,18 @@ QPushButton:pressed {
         self.pushButton_5.clicked.connect(self.handle_signup)
 
         self.dashboard = None
-
+        self.username = None
+        self.password = None
     def handle_login(self):
-        username = self.lineEdit.text().strip()
-        password = self.lineEdit_2.text()
+        self.username = self.lineEdit.text().strip()
+        self.password = self.lineEdit_2.text()
 
-        if not username or not password:
+        if not self.username or not self.password:
             QMessageBox.warning(self, "Input Error", "Please enter both username and password.")
             return
 
-        if self.check_user_credentials(username, password):
-            QMessageBox.information(self, "Login Success", f"Welcome back, {username} 👋")
+        if self.check_user_credentials(self.username, self.password):
+            QMessageBox.information(self, "Login Success", f"Welcome back, {self.username} 👋")
             self.open_dashboard()
         else:
             QMessageBox.warning(self, "Login Failed", "Invalid username or password.")
@@ -224,7 +226,7 @@ QPushButton:pressed {
         QMessageBox.information(self, "Coming Soon", "Sign up will be added in a future update!")
 
     def open_dashboard(self):
-        self.dashboard = DashboardWindow()
+        self.dashboard = DashboardWindow(self.username)
         self.dashboard.show()
         self.hide()
 
