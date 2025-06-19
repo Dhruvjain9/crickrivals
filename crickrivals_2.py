@@ -305,12 +305,19 @@ QPushButton:pressed {
     background-color: #005c99;
 }
 
+/* ✅ Combo Boxes */
 QComboBox {
-    background-color: white;
-    padding: 8px;
-    font: 14px;
-    border: 2px solid #3399ff;
+    background-color: #ffffff;
+    border: 1px solid #b3d9ff;
+    padding: 5px 10px;
     border-radius: 8px;
+    font-weight: bold;
+    color: #003366;
+}
+
+QComboBox:hover {
+    background-color: #e0f2ff; /* Light blue on hover */
+    border: 1px solid #66bfff;
 }
 
 QRadioButton {

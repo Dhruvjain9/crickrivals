@@ -12,7 +12,6 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QMessageBox
 from saveDashboard import Ui_saveDashboard
-from main2 import SaveDashboardWindow
 #from crickrivals_2 import Ui_MainWindow as HomeWindow
 import sqlite3
 
@@ -86,7 +85,7 @@ class Ui_MainWindow(object):
         self.comboBox_2.addItem("Rajasthan Royals (RR)")
         self.comboBox_2.addItem("Kolkata Knight Riders (KKR)")
         self.horizontalLayout_2.addWidget(self.comboBox_2)
-        spacerItem1 = QtWidgets.QSpacerItem(87, 20, QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Minimum)
+        spacerItem1 = QtWidgets.QSpacerItem(228, 20, QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem1)
         self.comboBox_3 = QtWidgets.QComboBox(self.gridLayoutWidget_2)
         self.comboBox_3.setMinimumSize(QtCore.QSize(0, 30))
@@ -863,7 +862,7 @@ class Ui_MainWindow(object):
    
     def open_save_dashboard(self):
         self.save_window = QtWidgets.QMainWindow()
-
+    
         # Collect data to pass
         for role in ["WK", "BAT", "AR", "BOWL"]:
             if not any(player_id for player_id in self.selected_players if self.get_player_details(player_id)[1] == role):
@@ -883,6 +882,72 @@ class Ui_MainWindow(object):
 
 
         self.ui_save = Ui_saveDashboard(team_name, team1, team2, players_list, team1_code, team2_code)
+        self.save_window.setStyleSheet("""/* Main Window */
+QMainWindow {
+    background-color: #f4f9ff;  /* smooth off-white-blue */
+    font-family: "Segoe UI", sans-serif;
+}
+
+/* All Labels */
+QLabel {
+    font-size: 16px;
+    color: #003366;
+    font-weight: 500;
+}
+
+/* Info/Warning Label */
+QLabel#infoLabel {
+    color: #d32f2f;  /* warning red */
+    font-weight: bold;
+}
+
+/* List Widget */
+QListWidget {
+    background-color: #ffffff;
+    border: 2px solid #007acc;
+    border-radius: 10px;
+    padding: 8px;
+    font-size: 15px;
+    color: #002244;
+}
+QListWidget::item {
+    padding: 8px;
+    margin: 4px;
+    border-radius: 6px;
+}
+QListWidget::item:selected {
+    background-color: #d0ecff;
+    color: #000;
+    font-weight: bold;
+}
+
+/* Buttons */
+QPushButton {
+    background-color: #007acc;
+    color: white;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 15px;
+    font-weight: bold;
+}
+QPushButton:hover {
+    background-color: #005f99;
+}
+QPushButton:pressed {
+    background-color: #004466;
+}
+
+/* Tooltip (optional but nice for hover help) */
+QToolTip {
+    background-color: #007acc;
+    color: white;
+    padding: 6px;
+    border: none;
+    font-size: 13px;
+    border-radius: 5px;
+}
+
+""")
         self.ui_save.setupUi(self.save_window)
         self.save_window.show()
 

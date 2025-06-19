@@ -15,6 +15,8 @@ class Ui_saveDashboard(object):
         self.players_list = players_list
         self.captain = None
         self.vice_captain = None
+        self.selected_player_item = None
+
     def setupUi(self, saveDashboard):
         saveDashboard.setObjectName("saveDashboard")
         saveDashboard.resize(1741, 936)
@@ -80,6 +82,8 @@ class Ui_saveDashboard(object):
         font.setBold(True)
         font.setWeight(75)
         self.listWidget.setFont(font)
+        self.listWidget.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
+        self.listWidget.itemClicked.connect(self.store_selected_item)  # Just store clicked player
         self.listWidget.setItemAlignment(QtCore.Qt.AlignRight)
         self.listWidget.setObjectName("listWidget")
         self.gridLayout_2.addWidget(self.listWidget, 3, 1, 1, 1)
@@ -136,7 +140,7 @@ class Ui_saveDashboard(object):
         self.label_6.setSizePolicy(sizePolicy)
         self.label_6.setMinimumSize(QtCore.QSize(500, 200))
         self.label_6.setText("")
-        self.label_6.setPixmap(QtGui.QPixmap(f"images/{self.team1_code}.jpg"))
+        self.label_6.setPixmap(QtGui.QPixmap(f"images/{self.team1_code}.png"))
         self.label_6.setAlignment(QtCore.Qt.AlignCenter)
         self.label_6.setObjectName("label_6")
         self.gridLayout_2.addWidget(self.label_6, 2, 0, 1, 1)
@@ -213,7 +217,7 @@ class Ui_saveDashboard(object):
         self.label_9.setSizePolicy(sizePolicy)
         self.label_9.setMinimumSize(QtCore.QSize(500, 200))
         self.label_9.setText("")
-        self.label_9.setPixmap(QtGui.QPixmap(f"images/{self.team2_code}.jpg"))
+        self.label_9.setPixmap(QtGui.QPixmap(f"images/{self.team2_code}.png"))
         self.label_9.setAlignment(QtCore.Qt.AlignCenter)
         self.label_9.setObjectName("label_9")
         self.gridLayout_2.addWidget(self.label_9, 2, 2, 1, 1)
@@ -260,6 +264,14 @@ class Ui_saveDashboard(object):
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuHelp.menuAction())
 
+        self.populate_players()
+        # Connect buttons to their respective functions
+        self.listWidget.setSortingEnabled(True)
+        self.pushButton_4.clicked.connect(self.save_team)
+        self.pushButton.clicked.connect(self.set_captain)
+        self.pushButton_2.clicked.connect(self.set_vice_captain)
+          # Populate the list with players
+
         self.retranslateUi(saveDashboard)
         QtCore.QMetaObject.connectSlotsByName(saveDashboard)
 
@@ -270,7 +282,6 @@ class Ui_saveDashboard(object):
         self.label_4.setText(_translate("saveDashboard", "Playing XI"))
         __sortingEnabled = self.listWidget.isSortingEnabled()
         self.listWidget.setSortingEnabled(False)
-
         self.listWidget.setSortingEnabled(__sortingEnabled)
         self.label_5.setText(_translate("saveDashboard", "VS"))
         self.label_2.setText(_translate("saveDashboard", "Team Name: "))
@@ -292,47 +303,56 @@ class Ui_saveDashboard(object):
         self.actionManual.setText(_translate("saveDashboard", "Manual"))
         self.actionSave_Team.setText(_translate("saveDashboard", "Save Team"))
     
-    
+    def store_selected_item(self, item):
+        self.selected_player_item = item  # Store the selected QListWidgetItem
+
+    def populate_players(self):
+        print("Populating players...")  # Debug print
+        self.listWidget.clear()
+        self.selected_player_item = None  # Reset selection
+
+        for player_str in self.players_list:
+            print("Adding:", player_str)  # Debug each player
+            item = QtWidgets.QListWidgetItem(player_str)
+            self.listWidget.addItem(item)
+
+    def save_team(self):
+        if not hasattr(self, 'captain') or not hasattr(self, 'vice_captain'):
+            QtWidgets.QMessageBox.warning(self, "Incomplete Selection", "Please select both Captain and Vice Captain.")
+            return
+
+        if not self.captain or not self.vice_captain:
+            QtWidgets.QMessageBox.warning(self, "Incomplete Selection", "Please select both Captain and Vice Captain.")
+            return
+
+        # Implement your actual saving logic here
+        QtWidgets.QMessageBox.information(self, "Success", "Team saved successfully!")
+
     def set_captain(self):
-        item = self.listWidget.currentItem()
-        if not item:
-            QtWidgets.QMessageBox.warning(None, "No Selection", "Please select a player to make Captain.")
+        if not hasattr(self, 'selected_player_item') or not self.selected_player_item:
+            QtWidgets.QMessageBox.warning(self, "No Selection", "Please select a player to make Captain.")
             return
-        selected = item.text()
-        if selected == self.vice_captain:
-            QtWidgets.QMessageBox.warning(None, "Invalid", "Player already selected as Vice Captain.")
+        
+        selected = self.selected_player_item.text()
+        
+        if hasattr(self, 'vice_captain') and selected == self.vice_captain:
+            QtWidgets.QMessageBox.warning(self, "Invalid", "Player already selected as Vice Captain.")
             return
+
         self.captain = selected
-        self.label_10.setText(self.captain)
+        self.label_10.setText(f"{self.captain}")
 
     def set_vice_captain(self):
-        item = self.listWidget.currentItem()
-        if not item:
-            QtWidgets.QMessageBox.warning(None, "No Selection", "Please select a player to make Vice Captain.")
+        if not hasattr(self, 'selected_player_item') or not self.selected_player_item:
+            QtWidgets.QMessageBox.warning(self, "No Selection", "Please select a player to make Vice Captain.")
             return
-        selected = item.text()
-        if selected == self.captain:
-            QtWidgets.QMessageBox.warning(None, "Invalid", "Player already selected as Captain.")
-            return
-        self.vice_captain = selected
-        self.label_12.setText(self.vice_captain)
-    def get_team_details(self):
-        return {
-            "team_name": self.team_name,
-            "team1": self.team1,
-            "team2": self.team2,
-            "players_list": [self.listWidget.item(i).text() for i in range(self.listWidget.count())],
-            "captain": self.captain,
-            "vice_captain": self.vice_captain
-        }
-    
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    saveDashboard = QtWidgets.QMainWindow()
-    ui = Ui_saveDashboard()
-    ui.setupUi(saveDashboard)
-    saveDashboard.show()
-    sys.exit(app.exec_())
 
+        selected = self.selected_player_item.text()
+
+        if hasattr(self, 'captain') and selected == self.captain:
+            QtWidgets.QMessageBox.warning(self, "Invalid", "Player already selected as Captain.")
+            return
+
+        self.vice_captain = selected
+        self.label_12.setText(f"{self.vice_captain}")
 

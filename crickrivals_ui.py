@@ -9,9 +9,18 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-
+from PyQt5.QtCore import pyqtSignal
 
 class Ui_CrickRivals(object):
+    returnPressed = pyqtSignal()
+    def __init__(self):
+        super().__init__()
+        self.setupUi(self)
+
+        # 👇 This works for both QLineEdit or entire window focus
+        self.lineEdit.returnPressed.connect(self.on_return_pressed)
+        self.lineEdit_2.returnPressed.connect(self.on_return_pressed)
+    
     def setupUi(self, CrickRivals):
         CrickRivals.setObjectName("CrickRivals")
         CrickRivals.resize(626, 560)
@@ -27,34 +36,48 @@ class Ui_CrickRivals(object):
         self.label.setScaledContents(True)
         self.label.setObjectName("label")
         self.verticalLayoutWidget = QtWidgets.QWidget(self.centralwidget)
-        self.verticalLayoutWidget.setGeometry(QtCore.QRect(105, 300, 100,  91))
+        self.verticalLayoutWidget.setGeometry(QtCore.QRect(125, 300, 70,  91))
         self.verticalLayoutWidget.setObjectName("verticalLayoutWidget")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.verticalLayoutWidget)
         self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.label_2 = QtWidgets.QLabel(self.verticalLayoutWidget)
+        font = QtGui.QFont()
+        font.setFamily("Segoe UI")
+        font.setPointSize(10)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_2.setFont(font)
         self.label_2.setObjectName("label_2")
         self.verticalLayout_2.addWidget(self.label_2)
         self.label_3 = QtWidgets.QLabel(self.verticalLayoutWidget)
+        font = QtGui.QFont()
+        font.setFamily("Segoe UI")
+        font.setPointSize(10)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_3.setFont(font)
         self.label_3.setObjectName("label_3")
         self.verticalLayout_2.addWidget(self.label_3)
         self.verticalLayoutWidget_2 = QtWidgets.QWidget(self.centralwidget)
-        self.verticalLayoutWidget_2.setGeometry(QtCore.QRect(250, 300, 251, 91))
+        self.verticalLayoutWidget_2.setGeometry(QtCore.QRect(230, 300, 251, 91))
         self.verticalLayoutWidget_2.setObjectName("verticalLayoutWidget_2")
         self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.verticalLayoutWidget_2)
         self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
         self.lineEdit = QtWidgets.QLineEdit(self.verticalLayoutWidget_2)
+        self.lineEdit.setFont(QtGui.QFont("Segoe UI", 12))
         self.lineEdit.setMinimumSize(QtCore.QSize(0, 40))
         self.lineEdit.setObjectName("lineEdit")
         self.verticalLayout_3.addWidget(self.lineEdit)
         self.lineEdit_2 = QtWidgets.QLineEdit(self.verticalLayoutWidget_2)
         self.lineEdit_2.setMinimumSize(QtCore.QSize(0, 40))
+        self.lineEdit_2.setFont(QtGui.QFont("Segoe UI", 12))
         self.lineEdit_2.setObjectName("lineEdit_2")
         self.lineEdit_2.setEchoMode(QtWidgets.QLineEdit.Password)
         self.verticalLayout_3.addWidget(self.lineEdit_2)
         self.horizontalLayoutWidget = QtWidgets.QWidget(self.centralwidget)
-        self.horizontalLayoutWidget.setGeometry(QtCore.QRect(190, 400, 241, 41))
+        self.horizontalLayoutWidget.setGeometry(QtCore.QRect(190, 420, 241, 61))
         self.horizontalLayoutWidget.setObjectName("horizontalLayoutWidget")
         self.horizontalLayout_3 = QtWidgets.QHBoxLayout(self.horizontalLayoutWidget)
         self.horizontalLayout_3.setContentsMargins(0, 0, 0, 0)
@@ -75,7 +98,9 @@ class Ui_CrickRivals(object):
         self.statusbar = QtWidgets.QStatusBar(CrickRivals)
         self.statusbar.setObjectName("statusbar")
         CrickRivals.setStatusBar(self.statusbar)
-        self.pushButton_6.setShortcut("Enter")  # Set shortcut for sign in button
+
+
+
         self.retranslateUi(CrickRivals)
         QtCore.QMetaObject.connectSlotsByName(CrickRivals)
 
@@ -84,10 +109,12 @@ class Ui_CrickRivals(object):
         CrickRivals.setWindowTitle(_translate("CrickRivals", "CrickRivals"))
         self.label_2.setText(_translate("CrickRivals", "USERNAME"))
         self.label_3.setText(_translate("CrickRivals", "PASSWORD"))
-        self.pushButton_6.setShortcut(_translate("CrickRivals", "Enter"))
+        self.pushButton_6.setShortcut(_translate("CrickRivals", "Return"))
         self.pushButton_6.setText(_translate("CrickRivals", "Sign in"))
         self.pushButton_5.setText(_translate("CrickRivals", "Sign up"))
-
+    
+    def on_return_pressed(self):
+        self.returnPressed.emit() 
 
 if __name__ == "__main__":
     import sys
