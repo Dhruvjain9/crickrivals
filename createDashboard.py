@@ -12,11 +12,13 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QMessageBox
 from saveDashboard import Ui_saveDashboard
-#from crickrivals_2 import Ui_MainWindow as HomeWindow
 import sqlite3
 
 
 class Ui_MainWindow(object):
+    def __init__(self, username):
+        self.username = username
+
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1720, 910)
@@ -880,8 +882,11 @@ class Ui_MainWindow(object):
             name, role, team, _ = self.get_player_details(player_id)
             players_list.append(f"{name} | {role} | {team}")
 
-
-        self.ui_save = Ui_saveDashboard(team_name, team1, team2, players_list, team1_code, team2_code)
+        if not team_name:
+            QMessageBox.warning(None, "Missing Team Name", "Please enter your team name.")
+            return
+        
+        self.ui_save = Ui_saveDashboard(team_name, team1, team2, players_list, team1_code, team2_code, self.username)
         self.save_window.setStyleSheet("""/* Main Window */
 QMainWindow {
     background-color: #f4f9ff;  /* smooth off-white-blue */
@@ -966,13 +971,3 @@ QToolTip {
             self.comboBox_3.setCurrentIndex(index2)
         else:
             print(f"Warning: {team2} not found in comboBox2 items")
-
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
-    sys.exit(app.exec_())

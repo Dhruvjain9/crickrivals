@@ -2,7 +2,7 @@
 # Form implementation generated from reading ui file 'saveDashboard.ui'
 # Created by: PyQt5 UI code generator 5.15.6
 # WARNING! All changes made in this file will be lost!
-
+import sqlite3
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 class Ui_saveDashboard(object):
@@ -318,15 +318,59 @@ class Ui_saveDashboard(object):
 
     def save_team(self):
         if not hasattr(self, 'captain') or not hasattr(self, 'vice_captain'):
-            QtWidgets.QMessageBox.warning(self, "Incomplete Selection", "Please select both Captain and Vice Captain.")
+            QtWidgets.QMessageBox.warning(None, "Incomplete Selection", "Please select both Captain and Vice Captain.")
             return
 
         if not self.captain or not self.vice_captain:
-            QtWidgets.QMessageBox.warning(self, "Incomplete Selection", "Please select both Captain and Vice Captain.")
+            QtWidgets.QMessageBox.warning(None, "Incomplete Selection", "Please select both Captain and Vice Captain.")
             return
 
-        # Implement your actual saving logic here
-        QtWidgets.QMessageBox.information(self, "Success", "Team saved successfully!")
+        try:
+            username = self.username  # Using this as table name
+            team_name = self.team_name  # Also storing it in the table
+
+            # Extract all player codes from list
+            players = [self.listWidget.item(i).text() for i in range(self.listWidget.count())]
+            print("Players to save:", players)  # Debug print
+            player_codes = [p.split(" - ")[0] if " - " in p else p for p in players]
+            print("Player codes to save:", player_codes)  # Debug print
+            # Clean captain & vice-captain codes
+            captain_code = self.captain.split(" - ")[0] if " - " in self.captain else self.captain
+            print("Captain code to save:", captain_code)  # Debug print
+            vice_captain_code = self.vice_captain.split(" - ")[0] if " - " in self.vice_captain else self.vice_captain
+
+            # Connect DB
+            conn = sqlite3.connect("team_data.db")
+            cursor = conn.cursor()
+
+            # Create user table with team_name column now included
+            cursor.execute(f'''
+                CREATE TABLE IF NOT EXISTS "{username}" (
+                    sno INTEGER PRIMARY KEY AUTOINCREMENT,
+                    team_name TEXT,
+                    team1 TEXT,
+                    team2 TEXT,
+                    players TEXT,
+                    vice_captain TEXT,
+                    captain TEXT
+                )
+            ''')
+
+            # Insert row
+            cursor.execute(f'''
+                INSERT INTO "{username}" (team_name, team1, team2, players, vice_captain, captain)
+                VALUES (?, ?, ?, ?, ?, ?)
+            ''', (team_name, self.team1_code, self.team2_code, ",".join(player_codes), vice_captain_code, captain_code))
+
+            conn.commit()
+            conn.close()
+
+            QtWidgets.QMessageBox.information(None, "Success", "Team saved successfully!")
+
+        except Exception as e:
+            QtWidgets.QMessageBox.critical(None, "Error", f"Failed to save team:\n{str(e)}")
+
+
 
     def set_captain(self):
         if not hasattr(self, 'selected_player_item') or not self.selected_player_item:

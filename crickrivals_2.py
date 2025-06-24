@@ -244,7 +244,7 @@ class Ui_MainWindow(object):
 
     def open_dashboard(self, row_num):
         self.dashboard_window = QtWidgets.QMainWindow()
-        self.dashboard_ui = Ui_Dashboard()
+        self.dashboard_ui = Ui_Dashboard(self.username)
         self.dashboard_ui.setupUi(self.dashboard_window)
         self.dashboard_window.setStyleSheet( """
 QMainWindow {
