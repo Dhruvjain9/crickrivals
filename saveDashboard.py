@@ -5,8 +5,9 @@
 import sqlite3
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+
 class Ui_saveDashboard(object):
-    def __init__(self, team_name, team1, team2, players_list, team1_code, team2_code):
+    def __init__(self, team_name, team1, team2, players_list, team1_code, team2_code, username):
         self.team1_code = team1_code
         self.team2_code = team2_code
         self.team_name = team_name
@@ -16,6 +17,7 @@ class Ui_saveDashboard(object):
         self.captain = None
         self.vice_captain = None
         self.selected_player_item = None
+        self.username = username  # Store username for DB operations
 
     def setupUi(self, saveDashboard):
         saveDashboard.setObjectName("saveDashboard")
@@ -318,8 +320,63 @@ class Ui_saveDashboard(object):
 
     def save_team(self):
         if not hasattr(self, 'captain') or not hasattr(self, 'vice_captain'):
-            QtWidgets.QMessageBox.warning(None, "Incomplete Selection", "Please select both Captain and Vice Captain.")
+            QtWidgets.QMessageBox.warning(self, "Incomplete Selection", "Please select both Captain and Vice Captain.")
             return
+
+        if not self.captain or not self.vice_captain:
+            QtWidgets.QMessageBox.warning(self, "Incomplete Selection", "Please select both Captain and Vice Captain.")
+            return
+
+        # Implement your actual saving logic here
+        QtWidgets.QMessageBox.information(self, "Success", "Team saved successfully!")
+
+    def set_captain(self):
+        if not hasattr(self, 'selected_player_item') or not self.selected_player_item:
+            QtWidgets.QMessageBox.warning(self, "No Selection", "Please select a player to make Captain.")
+            return
+        
+        selected = self.selected_player_item.text()
+        
+        if hasattr(self, 'vice_captain') and selected == self.vice_captain:
+            QtWidgets.QMessageBox.warning(self, "Invalid", "Player already selected as Vice Captain.")
+            return
+
+        self.captain = selected
+        self.label_10.setText(f"{self.captain}")
+
+    def set_vice_captain(self):
+        if not hasattr(self, 'selected_player_item') or not self.selected_player_item:
+            QtWidgets.QMessageBox.warning(self, "No Selection", "Please select a player to make Vice Captain.")
+            return
+
+        selected = self.selected_player_item.text()
+
+        if hasattr(self, 'captain') and selected == self.captain:
+            QtWidgets.QMessageBox.warning(self, "Invalid", "Player already selected as Captain.")
+            return
+
+        self.vice_captain = selected
+        self.label_12.setText(f"{self.vice_captain}")
+
+    def get_player_codes(self,players):
+        conn = sqlite3.connect("app_database.db")
+        cursor = conn.cursor()
+        code = []
+        for player in players:
+            details = player.split(" | ")
+            print("Extracted details:", details)  # Debug print
+            name,role,team_code = details
+            cursor.execute(
+                "SELECT id, playername, role, team FROM players WHERE playername = ? AND role = ? AND team = ?",
+                (name, role, team_code)
+            )
+            result = cursor.fetchone()[0]
+            code.append(result)
+        return code
+    def save_team(self):
+        if not hasattr(self, 'captain') or not hasattr(self, 'vice_captain'):
+            QtWidgets.QMessageBox.warning(None, "Incomplete Selection", "Please select both Captain and Vice Captain.")
+             
 
         if not self.captain or not self.vice_captain:
             QtWidgets.QMessageBox.warning(None, "Incomplete Selection", "Please select both Captain and Vice Captain.")
@@ -332,12 +389,13 @@ class Ui_saveDashboard(object):
             # Extract all player codes from list
             players = [self.listWidget.item(i).text() for i in range(self.listWidget.count())]
             print("Players to save:", players)  # Debug print
-            player_codes = [p.split(" - ")[0] if " - " in p else p for p in players]
+            player_codes = self.get_player_codes(players)
             print("Player codes to save:", player_codes)  # Debug print
+
             # Clean captain & vice-captain codes
-            captain_code = self.captain.split(" - ")[0] if " - " in self.captain else self.captain
+            captain_code = self.captain.split(" | ")[0] if " | " in self.captain else self.captain
             print("Captain code to save:", captain_code)  # Debug print
-            vice_captain_code = self.vice_captain.split(" - ")[0] if " - " in self.vice_captain else self.vice_captain
+            vice_captain_code = self.vice_captain.split(" | ")[0] if " | " in self.vice_captain else self.vice_captain
 
             # Connect DB
             conn = sqlite3.connect("team_data.db")
@@ -369,34 +427,3 @@ class Ui_saveDashboard(object):
 
         except Exception as e:
             QtWidgets.QMessageBox.critical(None, "Error", f"Failed to save team:\n{str(e)}")
-
-
-
-    def set_captain(self):
-        if not hasattr(self, 'selected_player_item') or not self.selected_player_item:
-            QtWidgets.QMessageBox.warning(self, "No Selection", "Please select a player to make Captain.")
-            return
-        
-        selected = self.selected_player_item.text()
-        
-        if hasattr(self, 'vice_captain') and selected == self.vice_captain:
-            QtWidgets.QMessageBox.warning(self, "Invalid", "Player already selected as Vice Captain.")
-            return
-
-        self.captain = selected
-        self.label_10.setText(f"{self.captain}")
-
-    def set_vice_captain(self):
-        if not hasattr(self, 'selected_player_item') or not self.selected_player_item:
-            QtWidgets.QMessageBox.warning(self, "No Selection", "Please select a player to make Vice Captain.")
-            return
-
-        selected = self.selected_player_item.text()
-
-        if hasattr(self, 'captain') and selected == self.captain:
-            QtWidgets.QMessageBox.warning(self, "Invalid", "Player already selected as Captain.")
-            return
-
-        self.vice_captain = selected
-        self.label_12.setText(f"{self.vice_captain}")
-
